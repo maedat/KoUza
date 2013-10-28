@@ -32,13 +32,13 @@ mkdir ${outfol}/trim_${QC}_${length}
 
 
 #fastQC analysis of raw data
-qsub -v PATH ~/bin/Kouza/fastQC.sh $Read1 $outfol/fastqc
-qsub -v PATH ~/bin/Kouza/fastQC.sh $Read2 $outfol/fastqc
+qsub -v PATH ./KoUza/fastQC.sh $Read1 $outfol/fastqc
+qsub -v PATH ./KoUza/fastQC.sh $Read2 $outfol/fastqc
 
 
 #triming adapter by NGSQCToolkit_v2.3
 #wait the end of trim26 command
-qsub -v PATH -v PERL5LIB -N QC26 ~/bin/Kouza/IlluQC_PRLL.pl.sh \
+qsub -v PATH -v PERL5LIB -N QC26 ./KoUza/IlluQC_PRLL.pl.sh \
 $Read1 \
 $Read2 \
 $indx_num \
@@ -48,18 +48,18 @@ $length
 
 
 #fastQC analysis of trim adapter cutted file _read1
-qsub -v PATH -hold_jid QC26 ~/bin/Kouza/fastQC.sh \
+qsub -v PATH -hold_jid QC26 ./KoUza/fastQC.sh \
 ${outfol}/NGSQCtoolkit/${Read1_name}_filtered \
 ${outfol}/fastqc_trimed
 
 #fastQC analysis of trim adapter cutted file _read2
-qsub -v PATH -hold_jid QC26 ~/bin/Kouza/fastQC.sh \
+qsub -v PATH -hold_jid QC26 ./KoUza/fastQC.sh \
 ${outfol}/NGSQCtoolkit/${Read2_name}_filtered \
 ${outfol}/fastqc_trimed
 
 
 #marged trim fileter file
-qsub -v PATH -N marge26 -hold_jid QC26 ~/bin/Kouza/end_pair_marge.pl.sh \
+qsub -v PATH -N marge26 -hold_jid QC26 ./KoUza/end_pair_marge.pl.sh \
 ${outfol}/NGSQCtoolkit/${Read1_name}_filtered \
 ${outfol}/NGSQCtoolkit/${Read2_name}_filtered \
 ${outfol}/trim_${QC}_${length}/trimed_paired_marged.fastq \

@@ -2,6 +2,9 @@
  
 #$ -S /bin/bash
 #$ -cwd
+#$ -v PATH
+#$ -v PERL5LIB
+
 
 export HOME=/home/maedat
 source ~/perl5/perlbrew/etc/bashrc
@@ -19,7 +22,7 @@ perl /home/maedat/bin/NGSQCToolkit_v2.3/QC/IlluQC_PRLL.pl \
 -pe \
 $Read1 \
 $Read2 \
-/home/maedat/doc/test/adaptor/Truseq_ntonly_idx${Idx}.txt \
+./KoUza/Adapter/truseq_adapter_ind${Idx}.fasta 1 \
 -c 8 \
 -l $length \
 -s $QC \
