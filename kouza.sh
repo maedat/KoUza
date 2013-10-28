@@ -1,48 +1,68 @@
 #!/bin/sh
  
 #$ -S /bin/bash
+#$ -v PATH
 #$ -cwd
 
+#Core pipeline of KoUza
+#kouza.sh　{Read1 file path} {Read1 file path} {output file path} {Number of index}
+#
+#
+#out_folder ---------
+#                 ┣----fastqc (fastQC data of raw fastq data)
+#                 ┣----NGSQCtoolkit( internal data file of QC)
+#                 ┣----trim_26_100 (result data)
+
+
+#Input data set
 Read1=$1
-Read1_name=$2
+Read1_name=`basename ${Read1}`
 Read2=$3
-Read2_name=$4
+Read2_name=`basename ${Read2}`
 outfol=$5
 indx_num=$6
+QC=$6
+length=$7
 
+#make folder for output
 mkdir ${outfol}
 mkdir ${outfol}/fastqc
+mkdir ${outfol}/fastqc_trimed
+mkdir ${outfol}/trim_${QC}_${length}
 
 
+#fastQC analysis of raw data
 qsub -v PATH ~/bin/Kouza/fastQC.sh $Read1 $outfol/fastqc
 qsub -v PATH ~/bin/Kouza/fastQC.sh $Read2 $outfol/fastqc
 
 
-qsub -v PATH -v PERL5LIB -N trim26 ~/bin/Kouza/TrimmingReads.pl.sh $Read1 $Read2 26 100
-
-
-qsub -v PATH -v PERL5LIB -N QC26 -hold_jid trim26 ~/bin/Kouza/IlluQC_PRLL.pl.sh \
-${Read1}_trimmed \
-${Read2}_trimmed \
+#triming adapter by NGSQCToolkit_v2.3
+#wait the end of trim26 command
+qsub -v PATH -v PERL5LIB -N QC26 ~/bin/Kouza/IlluQC_PRLL.pl.sh \
+$Read1 \
+$Read2 \
 $indx_num \
-${outfol}/QC
+${outfol}/NGSQCtoolkit \
+$QC \
+$length
 
+
+#fastQC analysis of trim adapter cutted file _read1
 qsub -v PATH -hold_jid QC26 ~/bin/Kouza/fastQC.sh \
-${outfol}/QC/${Read1_name}_trimmed_filtered \
-${outfol}/fastqc
+${outfol}/NGSQCtoolkit/${Read1_name}_filtered \
+${outfol}/fastqc_trimed
 
-
+#fastQC analysis of trim adapter cutted file _read2
 qsub -v PATH -hold_jid QC26 ~/bin/Kouza/fastQC.sh \
-${outfol}/QC/${Read2_name}_trimmed_filtered \
-${outfol}/fastqc
+${outfol}/NGSQCtoolkit/${Read2_name}_filtered \
+${outfol}/fastqc_trimed
 
 
-mkdir ${outfol}/trim_26_100
-
+#marged trim fileter file
 qsub -v PATH -N marge26 -hold_jid QC26 ~/bin/Kouza/end_pair_marge.pl.sh \
-${outfol}/QC/${Read1_name}_trimmed_filtered \
-${outfol}/QC/${Read2_name}_trimmed_filtered \
-${outfol}/trim_26_100/trimed_paired_marged.fastq \
+${outfol}/NGSQCtoolkit/${Read1_name}_filtered \
+${outfol}/NGSQCtoolkit/${Read2_name}_filtered \
+${outfol}/trim_${QC}_${length}/trimed_paired_marged.fastq \
 
 
 
