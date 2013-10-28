@@ -5,13 +5,15 @@
 #$ -cwd
 
 #Core pipeline of KoUza
-#kouza.sh　{Read1 file path} {Read1 file path} {output file path} {Number of index}
+#kouza.sh　{Read1 file path} {Read1 file path} {output file path} {Number of index} {Thureshold of QC} {Thureshold of length (%)}
 #
 #
 #out_folder ---------
 #                 ┣----fastqc (fastQC data of raw fastq data)
 #                 ┣----NGSQCtoolkit( internal data file of QC)
-#                 ┣----trim_26_100 (result data)
+#                 ┣----trim_QC_length (result data)
+
+
 
 
 #Input data set
