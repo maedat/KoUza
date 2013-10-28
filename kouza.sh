@@ -17,12 +17,12 @@
 #Input data set
 Read1=$1
 Read1_name=`basename ${Read1}`
-Read2=$3
+Read2=$2
 Read2_name=`basename ${Read2}`
-outfol=$5
-indx_num=$6
-QC=$6
-length=$7
+outfol=$3
+indx_num=$4
+QC=$5
+length=$6
 
 #make folder for output
 mkdir ${outfol}
