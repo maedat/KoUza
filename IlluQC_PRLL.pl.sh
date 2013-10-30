@@ -22,7 +22,7 @@ perl /home/maedat/bin/NGSQCToolkit_v2.3/QC/IlluQC_PRLL.pl \
 -pe \
 $Read1 \
 $Read2 \
-./KoUza/Adapter/truseq_adapter_ind${Idx}.fasta 1 \
+./KoUza/Adapter/truseq_adapter_ind${Idx}.fasta 1 5\
 -c 8 \
 -l $length \
 -s $QC \
